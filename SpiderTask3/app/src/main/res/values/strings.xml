@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SpiderTask3</string>
+    <string-array name="songs">
+        <item>Game of thrones theme song</item>
+        <item>The Dark Knight theme song</item>
+        <item>Pirates of the caribbean theme song</item>
+    </string-array>
+</resources>
