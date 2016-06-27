@@ -14,9 +14,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:duration="3000"
-
         android:inAnimation="@anim/slide_in_right"
-        android:outAnimation="@anim/slide_out_left">
+        android:outAnimation="@anim/slide_out_left"
+        >
 
         <ImageView
             android:layout_width="200dp"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:text="SlideShow"
         android:onClick="startSlideShow"
-        android:id="@+id/button"
+        android:id="@+id/slide_show"
         android:layout_alignTop="@+id/flipper"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"

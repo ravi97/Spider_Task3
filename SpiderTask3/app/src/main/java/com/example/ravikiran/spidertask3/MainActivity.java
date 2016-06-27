@@ -15,6 +15,7 @@ import android.text.StaticLayout;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,15 +27,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     ViewFlipper flip;
     Boolean slideShowRunning=false;
     int slideShowDuration=0;
+    Button slideShow;
 
     MediaPlayer play1,play2,play3;
     Spinner songSelect;
+    Button play;
+    Button stop;
+
 
     Boolean sensorEnabled=false;
-    Boolean sensorDetecting=false;
     SensorManager sm;
     Sensor s;
-   // String TAG="MyActivity";
+    Button enable;
+    Button disable;
+
 
     Handler h=new Handler(){
         @Override
@@ -51,13 +57,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        slideShow=(Button)findViewById(R.id.slide_show);
+
         play1=MediaPlayer.create(this,R.raw.got_theme);
         play2=MediaPlayer.create(this,R.raw.tdk_theme);
         play3=MediaPlayer.create(this,R.raw.potc_theme);
         songSelect=(Spinner)findViewById(R.id.spinner);
+        play=(Button)findViewById(R.id.play_song);
+        stop=(Button)findViewById(R.id.stop_song);
+        stop.setEnabled(false);
 
         sm=(SensorManager)getSystemService(SENSOR_SERVICE);
         s=sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        enable=(Button)findViewById(R.id.enable);
+        disable=(Button)findViewById(R.id.disable);
+        disable.setEnabled(false);
 
         timer();
     }
@@ -119,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 int seconds = slideShowDuration % 60;
                 String time = String.format("%d:%02d:%02d", hours, minutes, seconds);
                 timeview.setText(time);
-                if ((slideShowRunning == true)&&(sensorEnabled==false)){
+                if (slideShowRunning == true){
                     slideShowDuration++;
                 }
                 handler.postDelayed(this, 1000);
@@ -128,10 +142,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
     public void playSong(View view){
-        if((play1.isPlaying()==true)||(play2.isPlaying()==true)||(play3.isPlaying()==true)){
-            Toast.makeText(MainActivity.this, "a song is already playing", Toast.LENGTH_SHORT).show();
-        }
-        else{
+
             if(songSelect.getSelectedItem().toString().equals("Game of thrones theme song")){
                 play1.start();
             }
@@ -141,15 +152,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             else {
                 play3.start();
             }
-        }
+        play.setEnabled(false);
+        stop.setEnabled(true);
+
 
     }
     public void stopSong(View View){
 
-        if((play1.isPlaying()==false)&&(play2.isPlaying()==false)&&(play3.isPlaying()==false)){
-            Toast.makeText(MainActivity.this, "none of the songs are playing", Toast.LENGTH_SHORT).show();
-        }
-        else{
+
             if(play1.isPlaying()==true){
                 play1.pause();
             }
@@ -159,31 +169,38 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             else{
                 play3.pause();
             }
-        }
+        play.setEnabled(true);
+        stop.setEnabled(false);
 
     }
 
     public void enableSensor(View view){
-        sensorEnabled=true;
+       // sensorEnabled=true;
         slideShowRunning=false;
         sm.registerListener(this,s,SensorManager.SENSOR_DELAY_NORMAL);
         flip=(ViewFlipper)findViewById(R.id.flipper);
         flip.stopFlipping();
         Toast.makeText(MainActivity.this, "sensor enabled", Toast.LENGTH_SHORT).show();
+        enable.setEnabled(false);
+        disable.setEnabled(true);
+        slideShow.setEnabled(false);
 
     }
 
     public void disableSensor(View view){
-        sensorEnabled=false;
+        //sensorEnabled=false;
         sm.unregisterListener(this);
         Toast.makeText(MainActivity.this, "sensor disabled", Toast.LENGTH_SHORT).show();
+        enable.setEnabled(true);
+        disable.setEnabled(false);
+        slideShow.setEnabled(true);
+
     }
 
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.values[0]==0){
-            sensorDetecting=true;
             flip=(ViewFlipper)findViewById(R.id.flipper);
             flip.showNext();
         }
